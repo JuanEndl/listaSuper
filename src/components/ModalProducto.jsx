@@ -32,7 +32,7 @@ export const ModalProducto = ({ abierto, cerrar, guardar }) => {
               Cancelar
             </button>
 
-            <button type="submit" className="rounded-lg bg-green-600 px-5 py-2 text-white hover:bg-green-700" >
+            <button type="submit" className="rounded-lg bg-sky-600 px-5 py-2 text-white hover:bg-sky-700" >
               Agregar
             </button>
           </div>

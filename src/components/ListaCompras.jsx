@@ -80,29 +80,30 @@ export const ListaCompras = () => {
 
 
   return (
-    <div className="contenedor">
+    <div className="contenedor w-full overflow-x-hidden">
       <h1 className="titulo">Lista de Compras</h1>
 
-      <div className="card">
-        <table className="w-full border-collapse">
+      <div className="card w-full">
+        <table className="w-full">
           <thead>
-            <tr className="border-b-2 border-white">
-              <th className="w-10 p-2">Productos</th>
+            <tr className="mb-8">
+              <th className="w-10">Productos</th>
             </tr>
           </thead>
 
+          <hr className="my-3 border-0 h-0.5 bg-black" />
+
           <tbody>
             {productos.map((producto) => (
-              <tr key={producto.id} className="border-b border-gray-500">
+              <tr key={producto.id} className="border border-black-500">
                 <td className="w-10 p-3">
-                  <div className="flex items-center gap-3"></div>
                   <input type="checkbox" checked={producto.comprado} onChange={() => toggleSeleccion(producto.id)} className="w-5 h-5 cursor-pointer" />
                 </td>
 
-                <td
+                <td 
                   className={`${
                     producto.comprado
-                      ? "line-through text-gray-300"
+                      ? "line-through text-red-500"
                       : ""
                   }`}
                 >
@@ -113,15 +114,15 @@ export const ListaCompras = () => {
           </tbody>
         </table>
         <div className="flex justify-center gap-4 mt-6 flex-wrap">
-          <button onClick={() => setModalAbierto(true)} className="mt-6 rounded-full bg-green-700 px-8 py-3 font-bold text-white hover:bg-green-950 transition" >
+          <button onClick={() => setModalAbierto(true)} className="mt-6 rounded-full bg-sky-600 px-8 py-3 font-bold text-white hover:bg-green-950 transition" >
             Agregar Producto
           </button>
 
-          <button onClick={eliminarProductosFinalizados} className="mt-6 rounded-full bg-red-950 px-8 py-3 font-bold text-white hover:bg-red-700 transition" >
+          <button onClick={eliminarProductosFinalizados} className="mt-6 rounded-full bg-red-500 px-8 py-3 font-bold text-white hover:bg-red-700 transition" >
             Eliminar Producto 
           </button>
 
-          <button onClick={() => setModalConfirmacion(true)} className="mt-6 rounded-full bg-lime-700 px-8 py-3 font-bold text-white hover:bg-lime-800 transition" >
+          <button onClick={() => setModalConfirmacion(true)} className="mt-6 rounded-full bg-green-700 px-8 py-3 font-bold text-white hover:bg-green-800 transition" >
             Finalazar compra 
           </button>
           </div>
