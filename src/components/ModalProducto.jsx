@@ -6,8 +6,15 @@ export const ModalProducto = ({ abierto, cerrar, guardar }) => {
   if (!abierto) return null;
 
   const agregar = () => {
+    if (!nombre.trim()) return;
+
     guardar(nombre);
     setNombre("");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Evita que la página se recargue
+    agregar();
   };
 
   return (
@@ -17,17 +24,19 @@ export const ModalProducto = ({ abierto, cerrar, guardar }) => {
           Nuevo producto
         </h2>
 
-        <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre del producto" className="mb-4 w-full rounded-lg border p-2" />
+        <form onSubmit={handleSubmit}>
+          <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre del producto" className="mb-4 w-full rounded-lg border p-2" autoFocus/>
 
-        <div className="flex justify-end gap-3">
-          <button onClick={cerrar} className="rounded-lg bg-gray-400 px-5 py-2 text-white" >
-            Cancelar
-          </button>
+          <div className="flex justify-end gap-3">
+            <button type="button" onClick={() => { setNombre(""); cerrar(); }} className="rounded-lg bg-gray-400 px-5 py-2 text-white hover:bg-gray-500" >
+              Cancelar
+            </button>
 
-          <button onClick={agregar} className="rounded-lg bg-green-600 px-5 py-2 text-white" >
-            Agregar
-          </button>
-        </div>
+            <button type="submit" className="rounded-lg bg-green-600 px-5 py-2 text-white hover:bg-green-700" >
+              Agregar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

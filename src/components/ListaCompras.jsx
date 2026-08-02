@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { ModalProducto } from "./ModalProducto";
+import { ModalConfirmacion } from "./ModalConfirmacion";
 
 export const ListaCompras = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
 
+  const [modalConfirmacion, setModalConfirmacion] = useState(false);
 
   /*productos seteados, si esta en false no esta marcado si esta en true se marca*/
   const [productos, setProductos] = useState([
@@ -51,10 +53,11 @@ export const ListaCompras = () => {
 };
 
   
-  /*Finalizar compra (borra toda la lista y la agrega a la base de datos)*/
+  /*Finalizar compra (borra toda la lista y la agrega a la base de datos, pregunta si se quiere finalizar)*/
 
   const finalizarCompra = () => {
     setProductos([]);
+    setModalConfirmacion(false);
   };
 
 
@@ -81,39 +84,51 @@ export const ListaCompras = () => {
       <h1 className="titulo">Lista de Compras</h1>
 
       <div className="card">
-        {productos.map((producto) => (
-          <div key={producto.id} className="flex w-full mb-3" >
-            <div className="flex items-center gap-3">
-              <input type="checkbox" checked={producto.comprado} onChange={() => toggleSeleccion(producto.id)} className="w-5 h-5 blue-green-600 cursor-pointer" />
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b-2 border-white">
+              <th className="w-10 p-2">Productos</th>
+            </tr>
+          </thead>
 
-              <span
-                className={
-                  producto.comprado
-                    ? "line-through text-gray-400"
-                    : ""
-                }
-              >
-                {producto.nombre}
-              </span>
-            </div>
+          <tbody>
+            {productos.map((producto) => (
+              <tr key={producto.id} className="border-b border-gray-500">
+                <td className="w-10 p-3">
+                  <div className="flex items-center gap-3"></div>
+                  <input type="checkbox" checked={producto.comprado} onChange={() => toggleSeleccion(producto.id)} className="w-5 h-5 cursor-pointer" />
+                </td>
+
+                <td
+                  className={`${
+                    producto.comprado
+                      ? "line-through text-gray-300"
+                      : ""
+                  }`}
+                >
+                  {producto.nombre}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="flex justify-center gap-4 mt-6 flex-wrap">
+          <button onClick={() => setModalAbierto(true)} className="mt-6 rounded-full bg-green-700 px-8 py-3 font-bold text-white hover:bg-green-950 transition" >
+            Agregar Producto
+          </button>
+
+          <button onClick={eliminarProductosFinalizados} className="mt-6 rounded-full bg-red-950 px-8 py-3 font-bold text-white hover:bg-red-700 transition" >
+            Eliminar Producto 
+          </button>
+
+          <button onClick={() => setModalConfirmacion(true)} className="mt-6 rounded-full bg-lime-700 px-8 py-3 font-bold text-white hover:bg-lime-800 transition" >
+            Finalazar compra 
+          </button>
           </div>
-        ))}
-
-        <button onClick={() => setModalAbierto(true)} className="mt-6 rounded-full bg-blue-500 px-8 py-3 font-bold text-white hover:bg-blue-700 transition" >
-          Agregar Producto
-        </button>
-
-        <button onClick={eliminarProductosFinalizados} className="mt-6 rounded-full bg-blue-500 px-8 py-3 font-bold text-white hover:bg-blue-700 transition" >
-          Eliminar Producto 
-        </button>
-
-        <button onClick={finalizarCompra} className="mt-6 rounded-full bg-blue-500 px-8 py-3 font-bold text-white hover:bg-blue-700 transition" >
-          Finalazar compra 
-        </button>
-
       </div>
 
       <ModalProducto abierto={modalAbierto} cerrar={() => setModalAbierto(false)} guardar={agregarProducto} />
+      <ModalConfirmacion abierto={modalConfirmacion} cerrar={() => setModalConfirmacion(false)} confirmar={finalizarCompra} />
     </div>
   );
 };
