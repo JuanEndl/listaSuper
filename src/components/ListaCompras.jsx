@@ -24,7 +24,7 @@ export const ListaCompras = () => {
     },
   ]);
 
-  /*Función que agrega un nuevo producto al estado*/
+  /*Función que agrega un nuevo producto*/
   const agregarProducto = (nombre) => {
     if (!nombre.trim()) return;
 
@@ -40,6 +40,25 @@ export const ListaCompras = () => {
     setModalAbierto(false);
   };
 
+
+  /*Eliminar productos seleccionados*/
+  const eliminarProductosFinalizados = () => {
+  setProductos((productosAnteriores) =>
+    productosAnteriores.filter(
+      (producto) => !producto.comprado
+    )
+  );
+};
+
+  
+  /*Finalizar compra (borra toda la lista y la agrega a la base de datos)*/
+
+  const finalizarCompra = () => {
+    setProductos([]);
+  };
+
+
+
   /* actualizar un elemento dentro de un array en React sin modificar el estado directamente */
   const toggleSeleccion = (id) => {
     setProductos((productosAnteriores) =>
@@ -54,13 +73,16 @@ export const ListaCompras = () => {
     );
   };
 
+
+
+
   return (
     <div className="contenedor">
       <h1 className="titulo">Lista de Compras</h1>
 
       <div className="card">
         {productos.map((producto) => (
-          <div key={producto.id} className="flex items-center justify-between w-full mb-3" >
+          <div key={producto.id} className="flex w-full mb-3" >
             <div className="flex items-center gap-3">
               <input type="checkbox" checked={producto.comprado} onChange={() => toggleSeleccion(producto.id)} className="w-5 h-5 blue-green-600 cursor-pointer" />
 
@@ -80,6 +102,15 @@ export const ListaCompras = () => {
         <button onClick={() => setModalAbierto(true)} className="mt-6 rounded-full bg-blue-500 px-8 py-3 font-bold text-white hover:bg-blue-700 transition" >
           Agregar Producto
         </button>
+
+        <button onClick={eliminarProductosFinalizados} className="mt-6 rounded-full bg-blue-500 px-8 py-3 font-bold text-white hover:bg-blue-700 transition" >
+          Eliminar Producto 
+        </button>
+
+        <button onClick={finalizarCompra} className="mt-6 rounded-full bg-blue-500 px-8 py-3 font-bold text-white hover:bg-blue-700 transition" >
+          Finalazar compra 
+        </button>
+
       </div>
 
       <ModalProducto abierto={modalAbierto} cerrar={() => setModalAbierto(false)} guardar={agregarProducto} />
