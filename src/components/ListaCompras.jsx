@@ -1,30 +1,38 @@
-import { useState } from "react";
 import { ModalProducto } from "./ModalProducto";
 import { ModalConfirmacion } from "./ModalConfirmacion";
+import { useState, useEffect } from "react";
 
 export const ListaCompras = () => {
+
+  const url = import.meta.env.VITE_API_URL;
+
+  const mostrarDatos = async () => {
+  try {
+    const respuesta = await fetch(url);
+    const datos = await respuesta.json();
+
+    const productosFormateados = datos.map((producto) => ({
+      id: producto.id,
+      nombre: producto.producto,
+      comprado: false,
+    }));
+
+    setProductos(productosFormateados);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+  useEffect(() => {
+    mostrarDatos();
+  }, []);
+
   const [modalAbierto, setModalAbierto] = useState(false);
 
   const [modalConfirmacion, setModalConfirmacion] = useState(false);
 
   /*productos seteados, si esta en false no esta marcado si esta en true se marca*/
-  const [productos, setProductos] = useState([
-    {
-      id: crypto.randomUUID(),
-      nombre: "Leche",
-      comprado: false,
-    },
-    {
-      id: crypto.randomUUID(),
-      nombre: "Huevos",
-      comprado: false,
-    },
-    {
-      id: crypto.randomUUID(),
-      nombre: "Bebida",
-      comprado: false,
-    },
-  ]);
+ const [productos, setProductos] = useState([]);
 
   /*Función que agrega un nuevo producto*/
   const agregarProducto = (nombre) => {
@@ -42,7 +50,6 @@ export const ListaCompras = () => {
     setModalAbierto(false);
   };
 
-
   /*Eliminar productos seleccionados*/
   const eliminarProductosFinalizados = () => {
   setProductos((productosAnteriores) =>
@@ -52,15 +59,11 @@ export const ListaCompras = () => {
   );
 };
 
-  
   /*Finalizar compra (borra toda la lista y la agrega a la base de datos, pregunta si se quiere finalizar)*/
-
   const finalizarCompra = () => {
     setProductos([]);
     setModalConfirmacion(false);
   };
-
-
 
   /* actualizar un elemento dentro de un array en React sin modificar el estado directamente */
   const toggleSeleccion = (id) => {
@@ -75,9 +78,6 @@ export const ListaCompras = () => {
       )
     );
   };
-
-
-
 
   return (
     <div className="contenedor w-full overflow-x-hidden">
