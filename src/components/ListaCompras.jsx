@@ -8,7 +8,8 @@ export const ListaCompras = () => {
 
   const mostrarDatos = async () => {
   try {
-    const respuesta = await fetch(url);
+    const respuesta = await fetch(`${url}/productos`);
+
     const datos = await respuesta.json();
 
     const productosFormateados = datos.map((producto) => ({
@@ -27,6 +28,9 @@ export const ListaCompras = () => {
     mostrarDatos();
   }, []);
 
+  
+
+
   const [modalAbierto, setModalAbierto] = useState(false);
 
   const [modalConfirmacion, setModalConfirmacion] = useState(false);
@@ -35,20 +39,31 @@ export const ListaCompras = () => {
  const [productos, setProductos] = useState([]);
 
   /*Función que agrega un nuevo producto*/
-  const agregarProducto = (nombre) => {
-    if (!nombre.trim()) return;
+  const agregarProducto = async (nombre) => {
+  if (!nombre.trim()) return;
 
-    setProductos((productosAnteriores) => [
-      ...productosAnteriores,
-      {
-        id: crypto.randomUUID(),
-        nombre,
-        comprado: false,
+  try {
+    const respuesta = await fetch(`${url}/productos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ]);
+      body: JSON.stringify({
+        producto: nombre,
+      }),
+    });
+
+    if (!respuesta.ok) {
+      throw new Error("Error al agregar el producto");
+    }
+
+    await mostrarDatos();
 
     setModalAbierto(false);
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   /*Eliminar productos seleccionados*/
   const eliminarProductosFinalizados = () => {
