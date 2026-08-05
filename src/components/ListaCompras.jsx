@@ -66,19 +66,34 @@ export const ListaCompras = () => {
 };
 
   /*Eliminar productos seleccionados*/
-  const eliminarProductosFinalizados = () => {
-  setProductos((productosAnteriores) =>
-    productosAnteriores.filter(
-      (producto) => !producto.comprado
-    )
-  );
+  const eliminarProductosFinalizados = async () => {
+  try {
+    const seleccionados = productos.filter((p) => p.comprado);
+
+    for (const producto of seleccionados) {
+      await fetch(`${url}/productos/${producto.id}`, {
+        method: "DELETE",
+      });
+    }
+
+    await mostrarDatos();
+
+  } catch (error) {
+    console.error(error);
+  }
 };
 
   /*Finalizar compra (borra toda la lista y la agrega a la base de datos, pregunta si se quiere finalizar)*/
-  const finalizarCompra = () => {
-    setProductos([]);
-    setModalConfirmacion(false);
-  };
+
+  const finalizarCompra = async () => {
+  await fetch(`${url}/productos`, {
+    method: "DELETE",
+  });
+
+  mostrarDatos();
+  setModalConfirmacion(false);
+};
+
 
   /* actualizar un elemento dentro de un array en React sin modificar el estado directamente */
   const toggleSeleccion = (id) => {
@@ -106,7 +121,7 @@ export const ListaCompras = () => {
             </tr>
           </thead>
 
-          <hr className="my-3 border-0 h-0.5 bg-black" />
+          
 
           <tbody>
             {productos.map((producto) => (
