@@ -1,6 +1,7 @@
 import { ModalProducto } from "./ModalProducto";
 import { ModalConfirmacion } from "./ModalConfirmacion";
 import { useState, useEffect } from "react";
+import { socket } from "../socket";
 
 export const ListaCompras = () => {
 
@@ -25,8 +26,16 @@ export const ListaCompras = () => {
 };
 
   useEffect(() => {
+  mostrarDatos();
+
+  socket.on("actualizarLista", () => {
     mostrarDatos();
-  }, []);
+  });
+
+  return () => {
+    socket.off("actualizarLista");
+  };
+}, []);;
 
   const [modalAbierto, setModalAbierto] = useState(false);
 
@@ -37,47 +46,45 @@ export const ListaCompras = () => {
 
   /*Función que agrega un nuevo producto*/
   const agregarProducto = async (nombre) => {
-  if (!nombre.trim()) return;
+    if (!nombre.trim()) return;
 
-  try {
-    const respuesta = await fetch(`${url}/productos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        producto: nombre,
-      }),
-    });
+    try {
+        const respuesta = await fetch(`${url}/productos`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                producto: nombre,
+            }),
+        });
 
-    if (!respuesta.ok) {
-      throw new Error("Error al agregar el producto");
+        if (!respuesta.ok) {
+            throw new Error("Error al agregar");
+        }
+
+        setModalAbierto(false);
+
+    } catch (error) {
+        console.error(error);
     }
-
-    await mostrarDatos();
-
-    setModalAbierto(false);
-  } catch (error) {
-    console.error(error);
-  }
 };
 
   /*Eliminar productos seleccionados*/
   const eliminarProductosFinalizados = async () => {
-  try {
-    const seleccionados = productos.filter((p) => p.comprado);
+    try {
 
-    for (const producto of seleccionados) {
-      await fetch(`${url}/productos/${producto.id}`, {
-        method: "DELETE",
-      });
+        const seleccionados = productos.filter((p) => p.comprado);
+
+        for (const producto of seleccionados) {
+            await fetch(`${url}/productos/${producto.id}`, {
+                method: "DELETE",
+            });
+        }
+
+    } catch (error) {
+        console.error(error);
     }
-
-    await mostrarDatos();
-
-  } catch (error) {
-    console.error(error);
-  }
 };
 
   /*Finalizar compra (borra toda la lista y la agrega a la base de datos, pregunta si se quiere finalizar)*/
@@ -86,7 +93,6 @@ export const ListaCompras = () => {
     method: "DELETE",
   });
 
-  mostrarDatos();
   setModalConfirmacion(false);
 };
 
