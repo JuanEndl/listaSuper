@@ -28,14 +28,11 @@ export const ListaCompras = () => {
     mostrarDatos();
   }, []);
 
-  
-
-
   const [modalAbierto, setModalAbierto] = useState(false);
 
   const [modalConfirmacion, setModalConfirmacion] = useState(false);
 
-  /*productos seteados, si esta en false no esta marcado si esta en true se marca*/
+  /*productos seteados*/
  const [productos, setProductos] = useState([]);
 
   /*Función que agrega un nuevo producto*/
@@ -84,7 +81,6 @@ export const ListaCompras = () => {
 };
 
   /*Finalizar compra (borra toda la lista y la agrega a la base de datos, pregunta si se quiere finalizar)*/
-
   const finalizarCompra = async () => {
   await fetch(`${url}/productos`, {
     method: "DELETE",
@@ -93,7 +89,6 @@ export const ListaCompras = () => {
   mostrarDatos();
   setModalConfirmacion(false);
 };
-
 
   /* actualizar un elemento dentro de un array en React sin modificar el estado directamente */
   const toggleSeleccion = (id) => {
@@ -120,8 +115,6 @@ export const ListaCompras = () => {
               <th className="w-10">Productos</th>
             </tr>
           </thead>
-
-          
 
           <tbody>
             {productos.map((producto) => (
