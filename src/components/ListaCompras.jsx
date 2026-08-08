@@ -16,7 +16,7 @@ export const ListaCompras = () => {
     const productosFormateados = datos.map((producto) => ({
       id: producto.id,
       nombre: producto.producto,
-      comprado: false,
+      comprado: Boolean(producto.comprado),
     }));
 
     setProductos(productosFormateados);
@@ -26,16 +26,17 @@ export const ListaCompras = () => {
 };
 
   useEffect(() => {
-  mostrarDatos();
+      mostrarDatos();
 
-  socket.on("actualizarLista", () => {
-    mostrarDatos();
-  });
+      socket.on("actualizarLista", () => {
+          console.log("🔥 Lista actualizada por Socket.IO");
+          mostrarDatos();
+      });
 
-  return () => {
-    socket.off("actualizarLista");
-  };
-}, []);;
+      return () => {
+          socket.off("actualizarLista");
+      };
+  }, []);
 
   const [modalAbierto, setModalAbierto] = useState(false);
 
@@ -97,18 +98,32 @@ export const ListaCompras = () => {
 };
 
   /* actualizar un elemento dentro de un array en React sin modificar el estado directamente */
-  const toggleSeleccion = (id) => {
-    setProductos((productosAnteriores) =>
-      productosAnteriores.map((producto) =>
-        producto.id === id
-          ? {
-              ...producto,
-              comprado: !producto.comprado,
-            }
-          : producto
-      )
-    );
-  };
+  const toggleSeleccion = async (id) => {
+    const producto = productos.find((p) => p.id === id);
+
+    if (!producto) return;
+
+    const nuevoEstado = !producto.comprado;
+
+    try {
+        const respuesta = await fetch(`${url}/productos/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                comprado: nuevoEstado,
+            }),
+        });
+
+        if (!respuesta.ok) {
+            throw new Error("Error al actualizar el producto");
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+};
 
   return (
     <div className="contenedor w-full overflow-x-hidden">
