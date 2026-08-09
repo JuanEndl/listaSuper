@@ -3,6 +3,8 @@ import { ModalConfirmacion } from "./ModalConfirmacion";
 import { useState, useEffect } from "react";
 import { socket } from "../socket";
 
+
+/*tra la lista de los productos de la db*/
 export const ListaCompras = () => {
 
   const url = import.meta.env.VITE_API_URL;
@@ -25,6 +27,7 @@ export const ListaCompras = () => {
   }
 };
 
+  /*useEffect con Sockot para la lectura rapida del navegador en tiempo real*/ 
   useEffect(() => {
       mostrarDatos();
 
@@ -38,8 +41,10 @@ export const ListaCompras = () => {
       };
   }, []);
 
+  /*Estado del modal*/
   const [modalAbierto, setModalAbierto] = useState(false);
 
+  /*Estado del modal de confirmacion*/
   const [modalConfirmacion, setModalConfirmacion] = useState(false);
 
   /*productos seteados*/
@@ -124,7 +129,7 @@ export const ListaCompras = () => {
         console.error(error);
     }
 };
-
+  /*Arranca el react con html*/
   return (
     <div className="contenedor w-full overflow-x-hidden">
       <h1 className="titulo">Lista de Compras</h1>
