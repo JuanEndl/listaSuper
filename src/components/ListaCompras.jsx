@@ -32,7 +32,7 @@ export const ListaCompras = () => {
       mostrarDatos();
 
       socket.on("actualizarLista", () => {
-          console.log("🔥 Lista actualizada por Socket.IO");
+          console.log("Lista actualizada por Socket.IO");
           mostrarDatos();
       });
 
